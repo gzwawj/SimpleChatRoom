@@ -1,2 +1,3 @@
-# -hello-word
-wode wendang
+# node 简单使用
+
+使用node搭建一个简单的用户管理，实现了用户的增删改
