@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>网页聊天室</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="box">
+        <div id="chat">
+            <div class="left">
+                <div class="left-top">
+                    <div class="pic">
+                        <img src="./img/a.png" alt="">
+                    </div>
+                    <div>李四李四李四李四李四李四李四</div>
+                </div>
+                <ul class="left-buttom user-list">
+                    <li class="user-item online">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="name">张三</div>
+                        <div class="user-item-shade" data-id="sdfsdf" data-username="张三aaa"></div>
+                    </li>
+                    <li class="user-item offline">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="name">张三张三张三张三</div>
+                        <div class="user-item-shade" data-id="sdfsdf"></div>
+                    </li>
+                    <li class="user-item">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="name">李四李四李四李四李四李四李四</div>
+                    </li>
+                    <li class="user-item">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="name">张三</div>
+                    </li>
+                    <li class="user-item">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="name">张三张三张三张三</div>
+                    </li>
+                    <li class="user-item">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="name">李四李四李四李四李四李四李四</div>
+                    </li>
+                    <li class="user-item">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="name">张三</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="right">
+                <div class="right-top">
+                    <p>to:张三</p>
+                </div>
+                <div class="right-center message-list">
+                    <div class="from">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="content">
+                            这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下这是聊天的内容，进行测试一下
+                        </div>
+                    </div>
+                    <div class="to">
+                        <div class="pic">
+                            <img src="./img/a.png" alt="">
+                        </div>
+                        <div class="content">
+                            这是聊天的内容，进行测试一下这是聊试一下
+                        </div>
+                    </div>
+                </div>
+                <div class="right-editor">
+                    <div class="func">
+                        <div class="icon image"></div>
+                        <div class="icon scissor"></div>
+                        <div class="icon"></div>
+                    </div>
+                    <div class="editor" contenteditable="true"></div>
+                    <div class="send">发送</div>
+                </div>
+            </div>
+            <div class="shade">
+                <div class="login">
+                    <div class="login-title">登录</div>
+                    <div class="login-user-pic pic">
+                        <img src="./img/a.png" alt="">
+                    </div>
+                    <div class="login-user">
+                        <input type="text" name="name" autocomplete="off" placeholder="输入用户名">
+                    </div>
+                    <div class="login-btn">
+                        <input type="submit" value="登录">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script data-main="./js/main.js" src="https://cdn.bootcss.com/require.js/2.3.6/require.min.js"></script>
+    <script>
+        requirejs.config({
+            paths: {
+                'jquery': 'https://cdn.bootcss.com/jquery/3.4.1/jquery.min',
+                'socket.io': 'https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io',
+                'html2canvas': 'https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.3/dist/html2canvas.min'
+            }
+        })
+    </script>
+</body>
+
+</html>

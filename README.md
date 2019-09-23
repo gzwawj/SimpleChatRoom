@@ -1,3 +1,3 @@
-# node 简单使用
+# nodejs-web-chat-room 网页聊天室
 
-使用node操作的实例
+使用nodejs+socket.io创建聊天室
