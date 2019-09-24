@@ -80,4 +80,15 @@ define(["require", "exports", "html2canvas"], function (require, exports, html2c
             jietu(canvas, dom);
         });
     }
+    var ajax_text = function (dom, url, data, method) {
+        if (data === void 0) { data = {}; }
+        if (method === void 0) { method = "POST"; }
+        return dom.ajax({
+            url: url,
+            data: data,
+            method: method,
+            type: "JSON"
+        });
+    };
+    exports.ajax_text = ajax_text;
 });

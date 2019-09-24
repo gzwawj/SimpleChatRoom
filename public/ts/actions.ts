@@ -96,3 +96,14 @@ function createJietu() {
         jietu(canvas, dom)
     });
 }
+
+let ajax_text = function (dom: any, url: string, data: object = {}, method: string = "POST") {
+    return dom.ajax({
+        url: url,
+        data: data,
+        method: method,
+        type: "JSON"
+    })
+}
+
+export { ajax_text }
