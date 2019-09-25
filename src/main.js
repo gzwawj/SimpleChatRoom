@@ -34,15 +34,16 @@ app.use(session({
 
 //     next()
 // })
-let sessionid = ''
 app.get('/', (req, res) => {
     // res.sendFile(__dirname + '/index.html');
-    sessionid = req.sessionID
     res.send()
 });
 app.post('/islogin', (req, res, next) => {
+    socket.socketchat(io, req.sessionID)
     if (req.session.user) {
-        res.send({ "status": true, "username": req.session.user.username, "userpic": req.session.user.userpic })
+        socket.getUserInfoList().then(res_userlist => {
+            res.send({ "status": true, "username": req.session.user.username, "userpic": req.session.user.userpic, "userlist": res_userlist })
+        })
     } else {
         res.send({ "status": false })
     }
@@ -70,15 +71,37 @@ app.post('/login', (req, res, next) => {
             redisModel.userInfoUpdata(req.sessionID, userinfo).then(res_infoupdata => {
                 if (res_infoupdata) {
                     redisModel.userUpdata(req.sessionID, true).then(res_updata => {
-                        res.send({ "status": true, "username": req.session.user.username, "userpic": req.session.user.userpic })
+                        socket.getUserInfoList().then(res_userlist => {
+                            res.send({ "status": true, "username": req.session.user.username, "userpic": req.session.user.userpic, "userlist": res_userlist })
+                        })
                     })
                 }
             })
         }
     )
 })
-
-socket.socketchat(io, sessionid)
+app.post('/messagelist', (req, res, next) => {
+    let key = req.body.to + "@" + req.body.from
+    redisModel.messageList(encodeURIComponent(key)).then(list => {
+        let messagelist = []
+        let timearr = []
+        for (let i in list) {
+            let obj = JSON.parse(list[i])
+            if (timearr.indexOf(obj.times) < 0) {
+                messagelist.push({
+                    to: obj.to,
+                    from: obj.from,
+                    msg: obj.msg,
+                    times: obj.times
+                })
+                timearr.push(obj.times)
+            } else {
+                continue
+            }
+        }
+        res.send(messagelist)
+    })
+})
 
 http.listen(3000, () => {
     console.log('listening on *:3000');

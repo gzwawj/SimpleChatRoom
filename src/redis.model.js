@@ -72,7 +72,7 @@ class RedisModel {
      */
     messageList(key) {
         return new Promise((resolve, reject) => {
-            connection.lrange(key, 0 - 1, (err, res) => {
+            connection.lrange(key, 0, -1, (err, res) => {
                 if (err) reject(err)
                 resolve(res)
             })
