@@ -16,12 +16,12 @@ function socketchat(io, sessionid) {
             redisModel.userInfoUpdata(sessionid, data).then(res => {
                 // console.log("userInfoUpdata")
             })
-            //更新用户状态
-            redisModel.userUpdata(sessionid, true).then(res => {
-                // console.log("userUpdata")
-            })
-            userlistdata(socket)
         })
+        //更新用户状态
+        redisModel.userUpdata(sessionid, true).then(res => {
+            // console.log("userUpdata")
+        })
+        userlistdata(socket)
         //获取用户之间的聊天内容
         socket.on('useritem', (e) => {
             let key = e.to + "@" + e.from
@@ -47,10 +47,12 @@ function socketchat(io, sessionid) {
                 times: _time.getTime()
             }
             if (e.msg) {
-                redisModel.messageAdd(encodeURIComponent(key), JSON.stringify(data)).then(res => {
-                    if (res) {
-                        messagelistdata(socket, key, e.socketid)
-                    }
+                redisModel.userInfo('messagetable', key).then(res_message => {
+                    redisModel.messageAdd(res_message[0], JSON.stringify(data)).then(res => {
+                        if (res) {
+                            messagelistdata(socket, res_message[0], e.socketid)
+                        }
+                    })
                 })
             }
         })
@@ -71,14 +73,14 @@ function socketchat(io, sessionid) {
      * @param {*} key 表名
      */
     function messagelistdata(socket, key, socketid) {
-        redisModel.messageList(encodeURIComponent(key)).then(
+        redisModel.messageList(key).then(
             res => {
                 let messagelist = []
                 let timearr = []
                 for (let i in res) {
                     let obj = JSON.parse(res[i])
                     if (timearr.indexOf(obj.times) < 0) {
-                        messagelist.push({
+                        messagelist.unshift({
                             to: obj.to,
                             from: obj.from,
                             msg: obj.msg,
@@ -100,12 +102,13 @@ async function getUserInfoList(sessionid) {
             for (let i in res) {
                 redisModel.userInfo(res[i], ['username', 'userpic', 'socketid', 'sessionid', 'status']).then(res1 => {
                     if (socketidarr.indexOf(res1[2]) < 0 && res1[3] != sessionid && res1[2]) {
-                        userlist.push({
+                        userlist.unshift({
                             username: res1[0],
                             userpic: res1[1],
                             socketid: res1[2],
                             status: res1[4]
                         })
+                        socketidarr.push(res1[2])
                     }
                 }, err1 => {
                     reject(err1)

@@ -52,7 +52,7 @@ app.post('/login', (req, res, next) => {
     redisModel.userInfo(req.sessionID, ['username', 'userpic', 'sessionid', 'socketid']).then(
         data => {
             let userinfo = {}
-            if (data[0]) {
+            if (data[2]) {
                 userinfo = {
                     username: data[0],
                     userpic: data[1]
@@ -72,6 +72,7 @@ app.post('/login', (req, res, next) => {
                 if (res_infoupdata) {
                     redisModel.userUpdata(req.sessionID, true).then(res_updata => {
                         socket.getUserInfoList().then(res_userlist => {
+                            console.log(res_userlist)
                             res.send({ "status": true, "username": req.session.user.username, "userpic": req.session.user.userpic, "userlist": res_userlist })
                         })
                     })
@@ -82,24 +83,37 @@ app.post('/login', (req, res, next) => {
 })
 app.post('/messagelist', (req, res, next) => {
     let key = req.body.to + "@" + req.body.from
-    redisModel.messageList(encodeURIComponent(key)).then(list => {
-        let messagelist = []
-        let timearr = []
-        for (let i in list) {
-            let obj = JSON.parse(list[i])
-            if (timearr.indexOf(obj.times) < 0) {
-                messagelist.push({
-                    to: obj.to,
-                    from: obj.from,
-                    msg: obj.msg,
-                    times: obj.times
-                })
-                timearr.push(obj.times)
-            } else {
-                continue
-            }
+    let keys = req.body.from + "@" + req.body.to
+    redisModel.userInfo('messagetable', key).then(res_message => {
+        if (res_message[0]) {
+            redisModel.messageList(res_message[0]).then(list => {
+                let messagelist = []
+                let timearr = []
+                for (let i in list) {
+                    let obj = JSON.parse(list[i])
+                    if (timearr.indexOf(obj.times) < 0) {
+                        messagelist.unshift({
+                            to: obj.to,
+                            from: obj.from,
+                            msg: obj.msg,
+                            times: obj.times
+                        })
+                        timearr.push(obj.times)
+                    } else {
+                        continue
+                    }
+                }
+                res.send(messagelist)
+            })
+        } else {
+            let str = Math.random().toString(36).substr(2)
+            let field = {}
+            field[key] = str
+            field[keys] = str
+            redisModel.userInfoUpdata('messagetable', field).then(res_messagetable => {
+                console.log(res_messagetable)
+            })
         }
-        res.send(messagelist)
     })
 })
 

@@ -4,8 +4,16 @@
     box-sizing: border-box;
 }
 
+html {
+    /*隐藏滚动条，当IE下溢出，仍然可以滚动*/
+    -ms-overflow-style: none;
+    /*火狐下隐藏滚动条*/
+    overflow: -moz-scrollbars-none;
+}
+
 body {
     font: 16px Helvetica, Arial;
+    overflow: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -148,9 +156,10 @@ body {
 #chat .right .right-center .content {
     padding: 10px;
     margin: 0 5px;
-    width: 200px;
+    max-width: 200px;
     background: #89eba9;
     border-radius: 10px;
+    word-break: break-all
 }
 
 #chat .right .right-editor {

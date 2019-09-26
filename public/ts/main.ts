@@ -12,8 +12,11 @@ $(function () {
 		if (islogin_res.status) {
 			initsocket(islogin_res.username, islogin_res.userpic, islogin_res.userlist)
 		} else {
+			let userpic: any = $(".login-user-pic img")[0]
+			let imgarr=['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg']
+			let key = Math.floor((Math.random()*imgarr.length))
+			userpic.src=`/img/${imgarr[key]}`
 			$(".login-btn input").on("click", () => {
-				let userpic: any = $(".login-user-pic img")[0]
 				let username = $(".login-user input").val()
 				if (userpic.src && username) {
 					ajax_text($, `/login`, { username: username, userpic: userpic.src }).then((login_res: any) => {
@@ -61,16 +64,26 @@ function initsocket(username: string, userpic: string, userlistdata: any) {
 		$(".right-top p").text(`TO：${_to_username}`)
 		//获取私聊对象与自己的聊天内容(to为私聊对象)
 		// socketConnection.emit('useritem', { to: _to_username, from: username, socketid: socketid })
-		ajax_text($, `/messagelist`).then((list: any) => {
+		ajax_text($, `/messagelist`, { to: _to_username, from: username }).then((list: any) => {
+			console.log(list)
 			$(".message-list").empty()
 			$(".message-list").append(rendermessagelist(list, username, userpic))
+			scroll()
 		})
 	})
 	$(".send").on("click", () => {
 		let content = $(".editor").html()
 		let msg = content.replace(/<div>/gm, ``).replace(/<\/div>/gm, `\n`).replace(/<br>/gm, ``)
 		socketConnection.emit('sendmsg', { msg: msg, socketid: socketid, to: _to_username, from: username })
+		let str = `<div class="to">
+						<div class="pic">
+							<img src="${userpic}" alt="">
+						</div>
+						<div class="content">${msg}</div>
+					</div>`
+		$(".message-list").append(str)
 		$(".editor").html('')
+		scroll()
 	})
 }
 //渲染用户列表
@@ -121,4 +134,9 @@ function rendermessagelist(data: any, username: string, userpic: string) {
 		}
 	}
 	return messageitem
+}
+//滚动到底部，动画过渡
+function scroll() {
+	let scrollHeight = $(".message-list").prop("scrollHeight");
+	$(".message-list").animate({ scrollTop: scrollHeight }, 400);
 }

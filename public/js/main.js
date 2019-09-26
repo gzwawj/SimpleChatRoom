@@ -16,11 +16,14 @@ define(["require", "exports", "socket.io-client", "jquery", "./actions"], functi
                 initsocket(islogin_res.username, islogin_res.userpic, islogin_res.userlist);
             }
             else {
+                var userpic_1 = jquery_1.default(".login-user-pic img")[0];
+                var imgarr = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg'];
+                var key = Math.floor((Math.random() * imgarr.length));
+                userpic_1.src = "/img/" + imgarr[key];
                 jquery_1.default(".login-btn input").on("click", function () {
-                    var userpic = jquery_1.default(".login-user-pic img")[0];
                     var username = jquery_1.default(".login-user input").val();
-                    if (userpic.src && username) {
-                        actions_1.ajax_text(jquery_1.default, "/login", { username: username, userpic: userpic.src }).then(function (login_res) {
+                    if (userpic_1.src && username) {
+                        actions_1.ajax_text(jquery_1.default, "/login", { username: username, userpic: userpic_1.src }).then(function (login_res) {
                             if (login_res.status) {
                                 initsocket(login_res.username, login_res.userpic, login_res.userlist);
                             }
@@ -56,16 +59,21 @@ define(["require", "exports", "socket.io-client", "jquery", "./actions"], functi
             var _userpic = jquery_1.default(".user-list .pic img")[0];
             _to_userpic = _userpic.src;
             jquery_1.default(".right-top p").text("TO\uFF1A" + _to_username);
-            actions_1.ajax_text(jquery_1.default, "/messagelist").then(function (list) {
+            actions_1.ajax_text(jquery_1.default, "/messagelist", { to: _to_username, from: username }).then(function (list) {
+                console.log(list);
                 jquery_1.default(".message-list").empty();
                 jquery_1.default(".message-list").append(rendermessagelist(list, username, userpic));
+                scroll();
             });
         });
         jquery_1.default(".send").on("click", function () {
             var content = jquery_1.default(".editor").html();
             var msg = content.replace(/<div>/gm, "").replace(/<\/div>/gm, "\n").replace(/<br>/gm, "");
             socketConnection.emit('sendmsg', { msg: msg, socketid: socketid, to: _to_username, from: username });
+            var str = "<div class=\"to\">\n\t\t\t\t\t\t<div class=\"pic\">\n\t\t\t\t\t\t\t<img src=\"" + userpic + "\" alt=\"\">\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"content\">" + msg + "</div>\n\t\t\t\t\t</div>";
+            jquery_1.default(".message-list").append(str);
             jquery_1.default(".editor").html('');
+            scroll();
         });
     }
     function renderuserlist(data) {
@@ -94,5 +102,9 @@ define(["require", "exports", "socket.io-client", "jquery", "./actions"], functi
             }
         }
         return messageitem;
+    }
+    function scroll() {
+        var scrollHeight = jquery_1.default(".message-list").prop("scrollHeight");
+        jquery_1.default(".message-list").animate({ scrollTop: scrollHeight }, 400);
     }
 });
